@@ -15,7 +15,12 @@ libc = "0.2"
 
 [dev-dependencies]
 criterion = "0.3"
+bincode = { version="1" }
 
 [[bench]]
 name = "ipc_channel"
+harness = false
+
+[[bench]]
+name = "bincode"
 harness = false
