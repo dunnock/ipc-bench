@@ -60,3 +60,59 @@ Found 10 outliers among 100 measurements (10.00%)
   5 (5.00%) high mild
   5 (5.00%) high severe
 ```
+
+
+## Bincode
+
+```
+bincode_encode/1024     time:   [8.8087 us 9.0109 us 9.2546 us]                                 
+                        thrpt:  [105.52 MiB/s 108.38 MiB/s 110.86 MiB/s]
+Found 15 outliers among 100 measurements (15.00%)
+  1 (1.00%) low mild
+  6 (6.00%) high mild
+  8 (8.00%) high severe
+
+bincode_encode/10240    time:   [87.656 us 89.375 us 91.548 us]                                 
+                        thrpt:  [106.67 MiB/s 109.27 MiB/s 111.41 MiB/s]
+Found 12 outliers among 100 measurements (12.00%)
+  6 (6.00%) high mild
+  6 (6.00%) high severe
+
+bincode_encode/51200    time:   [433.69 us 439.43 us 447.46 us]                                 
+                        thrpt:  [109.12 MiB/s 111.12 MiB/s 112.59 MiB/s]
+Found 13 outliers among 100 measurements (13.00%)
+  3 (3.00%) high mild
+  10 (10.00%) high severe
+
+bincode_encode/102400   time:   [865.30 us 879.94 us 899.56 us]                                  
+                        thrpt:  [108.56 MiB/s 110.98 MiB/s 112.86 MiB/s]
+Found 16 outliers among 100 measurements (16.00%)
+  2 (2.00%) high mild
+  14 (14.00%) high severe
+```
+
+```
+bincode_decode/1024     time:   [2.9798 us 3.1397 us 3.3105 us]                                 
+                        thrpt:  [294.99 MiB/s 311.03 MiB/s 327.73 MiB/s]
+Found 7 outliers among 100 measurements (7.00%)
+  6 (6.00%) high mild
+  1 (1.00%) high severe
+
+bincode_decode/10240    time:   [29.083 us 31.390 us 34.096 us]                                  
+                        thrpt:  [286.42 MiB/s 311.10 MiB/s 335.78 MiB/s]
+Found 9 outliers among 100 measurements (9.00%)
+  4 (4.00%) high mild
+  5 (5.00%) high severe
+
+bincode_decode/51200    time:   [133.91 us 147.23 us 164.21 us]                                 
+                        thrpt:  [297.34 MiB/s 331.64 MiB/s 364.64 MiB/s]
+Found 14 outliers among 100 measurements (14.00%)
+  3 (3.00%) high mild
+  11 (11.00%) high severe
+
+bincode_decode/102400   time:   [333.02 us 359.75 us 393.40 us]                                  
+                        thrpt:  [248.24 MiB/s 271.45 MiB/s 293.24 MiB/s]
+Found 3 outliers among 100 measurements (3.00%)
+  2 (2.00%) high mild
+  1 (1.00%) high severe
+```
