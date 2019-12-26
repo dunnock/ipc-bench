@@ -1,4 +1,4 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput, BenchmarkId};
+use criterion::{criterion_group, criterion_main, Criterion, Throughput, BenchmarkId};
 use ipc_channel::ipc::{IpcOneShotServer, IpcSender};
 use ipc_bench::channel::{Message, Channel, Sender, Receiver};
 use ipc_bench::process::{fork, Wait, Kill, Pid};
