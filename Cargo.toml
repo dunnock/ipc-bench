@@ -1,0 +1,20 @@
+[package]
+name = "ipc-bench"
+version = "0.1.0"
+authors = ["Maksym Vorobiov <maxim.vorobjov@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ipc-channel = "0.13"
+serde = { version="1", features=["derive"] }
+anyhow = "1"
+libc = "0.2"
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "ipc_channel"
+harness = false
