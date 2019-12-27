@@ -7,7 +7,7 @@ use ipc_bench::process::{fork, Wait, Kill, Pid};
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Clone)]
-struct Message(Vec<u8>);
+struct Message(#[serde(with = "serde_bytes")] Vec<u8>);
 struct MsgTuple(pub u32, pub Vec<u8>);
 
 trait MessageData: Clone + Into<Vec<u8>> + From<MsgTuple> + for<'de> Deserialize<'de> + Serialize  {

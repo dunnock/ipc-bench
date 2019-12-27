@@ -7,6 +7,81 @@ cargo bench
 
 ## Results
 
+## UPDATE!!
+
+It appears I was missing to tell serde how to best work with bytes, following fixes and makes performance of sending data via bincode comparable to sending bytes array. Thanks [Dr-Ermann](https://github.com/Dr-Emann/ipc-bench) for pointing out:
+```rust
+#[derive(Serialize, Deserialize, Clone)]
+struct Message {
+	pub topic: u32,
+    #[serde(with = "serde_bytes")]
+	pub data: Vec<u8>
+}
+```
+
+IpcSender<Message> / IpcReceiver<Message>
+```log
+sends_custom/1024       time:   [1.7104 us 1.7234 us 1.7407 us]                               
+                        thrpt:  [561.02 MiB/s 566.63 MiB/s 570.95 MiB/s]
+
+sends_custom/10240      time:   [4.4657 us 4.5620 us 4.6565 us]                                
+                        thrpt:  [2.0480 GiB/s 2.0905 GiB/s 2.1355 GiB/s]
+
+sends_custom/51200      time:   [43.689 us 44.632 us 45.778 us]                                
+                        thrpt:  [1.0416 GiB/s 1.0684 GiB/s 1.0914 GiB/s]
+
+sends_custom/102400     time:   [69.929 us 70.925 us 72.257 us]                                
+                        thrpt:  [1.3198 GiB/s 1.3446 GiB/s 1.3638 GiB/s]
+```
+```log
+receives_custom/1024    time:   [1.7672 us 1.8164 us 1.8696 us]                                  
+                        thrpt:  [522.35 MiB/s 537.63 MiB/s 552.60 MiB/s]
+
+receives_custom/10240   time:   [4.3900 us 4.4939 us 4.6213 us]                                   
+                        thrpt:  [2.0636 GiB/s 2.1221 GiB/s 2.1724 GiB/s]
+
+receives_custom/51200   time:   [42.596 us 42.876 us 43.201 us]                                   
+                        thrpt:  [1.1038 GiB/s 1.1121 GiB/s 1.1194 GiB/s]
+
+receives_custom/102400  time:   [70.224 us 70.906 us 71.863 us]                                   
+                        thrpt:  [1.3271 GiB/s 1.3450 GiB/s 1.3580 GiB/s]
+
+Test results with IpcBytesSender/IpcBytesReceiver
+
+```log
+sends_custom_bytes/1024 time:   [1.5317 us 1.5523 us 1.5793 us]                                     
+                        thrpt:  [618.36 MiB/s 629.09 MiB/s 637.55 MiB/s]
+
+sends_custom_bytes/10240                                                                             
+                        time:   [3.6246 us 3.6457 us 3.6703 us]
+                        thrpt:  [2.5983 GiB/s 2.6159 GiB/s 2.6311 GiB/s]
+
+sends_custom_bytes/51200                                                                             
+                        time:   [40.257 us 40.851 us 41.614 us]
+                        thrpt:  [1.1459 GiB/s 1.1673 GiB/s 1.1845 GiB/s]
+
+sends_custom_bytes/102400                                                                            
+                        time:   [60.408 us 61.474 us 62.816 us]
+                        thrpt:  [1.5182 GiB/s 1.5514 GiB/s 1.5787 GiB/s]
+```
+```log
+receives_custom_bytes/1024                                                                             
+                        time:   [1.4920 us 1.5064 us 1.5213 us]
+                        thrpt:  [641.93 MiB/s 648.26 MiB/s 654.51 MiB/s]
+
+receives_custom_bytes/10240                                                                             
+                        time:   [3.6613 us 3.7150 us 3.7777 us]
+                        thrpt:  [2.5245 GiB/s 2.5671 GiB/s 2.6047 GiB/s]
+
+receives_custom_bytes/51200                                                                             
+                        time:   [41.050 us 42.098 us 43.319 us]
+                        thrpt:  [1.1008 GiB/s 1.1327 GiB/s 1.1616 GiB/s]
+
+receives_custom_bytes/102400                                                                            
+                        time:   [57.150 us 57.577 us 58.095 us]
+                        thrpt:  [1.6416 GiB/s 1.6563 GiB/s 1.6687 GiB/s]
+ ```
+
 ## Summary
 
 Benches compare sending of byte buffer of a given size either within a `Serialize` derived structure vs plain buffer.
