@@ -163,3 +163,76 @@ bincode_decode/51200    time:   [133.91 us 147.23 us 164.21 us]
 bincode_decode/102400   time:   [333.02 us 359.75 us 393.40 us]                                  
                         thrpt:  [248.24 MiB/s 271.45 MiB/s 293.24 MiB/s]
 ```
+
+
+## Further investigation
+
+[ipc_channel_custom.rs](https://github.com/dunnock/ipc-bench/blob/master/benches/ipc_channel_custom.rs) takes it even further, using the same underlying data layer (just a `Vec<u8>`) with 
+channels instantiated either `ipc::channel` or `ipc::bytes_channel`, when sending bytes it uses custom tailored serialization.
+
+As it can be seen custom tailored Serialization/Deserialization implementation working up to 10x times faster than bincode's.
+
+### bincode's serialization with simple `struct(Vec<u8>)` data:
+
+```
+sends_custom/1024       time:   [7.1496 us 7.1883 us 7.2374 us]                               
+                        thrpt:  [134.93 MiB/s 135.85 MiB/s 136.59 MiB/s]
+
+sends_custom/10240      time:   [56.718 us 56.893 us 57.076 us]                               
+                        thrpt:  [171.10 MiB/s 171.65 MiB/s 172.18 MiB/s]
+
+sends_custom/51200      time:   [295.99 us 298.58 us 301.73 us]                               
+                        thrpt:  [161.83 MiB/s 163.53 MiB/s 164.97 MiB/s]
+
+sends_custom/102400     time:   [581.99 us 583.39 us 585.09 us]                                
+                        thrpt:  [166.91 MiB/s 167.39 MiB/s 167.80 MiB/s]
+```
+
+```
+receives_custom/1024    time:   [7.1560 us 7.2338 us 7.3347 us]                                  
+                        thrpt:  [133.14 MiB/s 135.00 MiB/s 136.47 MiB/s]
+
+receives_custom/10240   time:   [56.625 us 56.965 us 57.326 us]                                  
+                        thrpt:  [170.35 MiB/s 171.43 MiB/s 172.46 MiB/s]
+
+receives_custom/51200   time:   [296.42 us 296.94 us 297.62 us]                                  
+                        thrpt:  [164.06 MiB/s 164.44 MiB/s 164.73 MiB/s]
+
+receives_custom/102400  time:   [588.19 us 590.89 us 593.70 us]                                   
+                        thrpt:  [164.49 MiB/s 165.27 MiB/s 166.03 MiB/s]
+```
+
+### custom tailored serialization based on same `Vec<u8>` data layer:
+
+```
+sends_custom_bytes/1024 time:   [1.5784 us 1.6231 us 1.6922 us]                                     
+                        thrpt:  [577.10 MiB/s 601.66 MiB/s 618.70 MiB/s]
+sends_custom_bytes/10240                                                                             
+                        time:   [3.6300 us 3.6490 us 3.6735 us]
+                        thrpt:  [2.5961 GiB/s 2.6135 GiB/s 2.6272 GiB/s]
+
+sends_custom_bytes/51200                                                                             
+                        time:   [29.473 us 29.964 us 30.615 us]
+                        thrpt:  [1.5575 GiB/s 1.5914 GiB/s 1.6179 GiB/s]
+sends_custom_bytes/102400                                                                            
+                        time:   [51.452 us 52.001 us 52.597 us]
+                        thrpt:  [1.8132 GiB/s 1.8339 GiB/s 1.8535 GiB/s]
+```
+
+```
+receives_custom_bytes/1024                                                                             
+                        time:   [1.5848 us 1.6060 us 1.6289 us]
+                        thrpt:  [599.51 MiB/s 608.05 MiB/s 616.20 MiB/s]
+
+receives_custom_bytes/10240                                                                             
+                        time:   [3.6046 us 3.6162 us 3.6305 us]
+                        thrpt:  [2.6269 GiB/s 2.6372 GiB/s 2.6457 GiB/s]
+
+receives_custom_bytes/51200                                                                             
+                        time:   [30.061 us 31.198 us 32.522 us]
+                        thrpt:  [1.4662 GiB/s 1.5284 GiB/s 1.5862 GiB/s]
+
+receives_custom_bytes/102400                                                                            
+                        time:   [53.772 us 55.318 us 57.163 us]
+                        thrpt:  [1.6683 GiB/s 1.7240 GiB/s 1.7735 GiB/s]
+```

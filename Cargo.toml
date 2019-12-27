@@ -26,5 +26,9 @@ name = "ipc_channel"
 harness = false
 
 [[bench]]
+name = "ipc_channel_custom"
+harness = false
+
+[[bench]]
 name = "bincode"
 harness = false
