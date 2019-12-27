@@ -1,7 +1,13 @@
 use criterion::{criterion_group, criterion_main, Criterion, Throughput, BenchmarkId};
-use ipc_bench::channel::{Message};
 use bincode::{serialize, deserialize};
+use serde::{Serialize, Deserialize};
 
+#[derive(Serialize, Deserialize, Clone)]
+struct Message {
+	//pub topic: String,
+	pub topic: u32,
+	pub data: Vec<u8>
+}
 
 pub fn bincode_encode(c: &mut Criterion) {
     static KB: usize = 1024;

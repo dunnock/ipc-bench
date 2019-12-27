@@ -1,12 +1,23 @@
 use criterion::{criterion_group, criterion_main, Criterion, Throughput, BenchmarkId};
-use ipc_channel::ipc::{IpcOneShotServer, IpcSender};
-use ipc_bench::channel::{Message, Channel, Sender, Receiver};
+use ipc_channel::ipc::{self, IpcOneShotServer, IpcSender, IpcReceiver};
+//use ipc_bench::channel::{Channel, Sender, Receiver};
 use ipc_bench::process::{fork, Wait, Kill, Pid};
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize, Clone)]
+struct Message {
+	//pub topic: String,
+	pub topic: u32,
+	pub data: Vec<u8>
+}
+
+type Sender = IpcSender<Message>;
+type Receiver = IpcReceiver<Message>;
 
 fn fork_receiver() -> (Pid, Sender) {
     let (server, server_name) = IpcOneShotServer::new().unwrap();
     let pid = unsafe { fork(|| {
-        let (tx, rx) = Channel::simplex().unwrap().split().unwrap();
+        let (tx, rx) = ipc::channel().unwrap();
         let txs = IpcSender::connect(server_name).unwrap();
         txs.send(tx).unwrap();
         loop {
@@ -20,7 +31,7 @@ fn fork_receiver() -> (Pid, Sender) {
 fn fork_sender(msg: Message) -> (Pid, Receiver) {
     let (server, server_name) = IpcOneShotServer::new().unwrap();
     let pid = unsafe { fork(|| {
-        let (tx, rx) = Channel::simplex().unwrap().split().unwrap();
+        let (tx, rx) = ipc::channel().unwrap();
         let txs = IpcSender::connect(server_name).unwrap();
         txs.send(rx).unwrap();
         loop {
