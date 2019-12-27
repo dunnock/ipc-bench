@@ -9,7 +9,7 @@ cargo bench
 
 ## UPDATE!!
 
-It appears I was missing to tell serde how to best work with bytes, following fixes and makes performance of sending data via bincode comparable to sending bytes array. Thanks [Dr-Ermann](https://github.com/Dr-Emann/ipc-bench) for pointing out:
+It appears I was missing to tell serde how to work with bytes, following fix makes performance sending with bincode serde comparable to sending raw bytes array. Thanks [Dr-Ermann](https://github.com/Dr-Emann/ipc-bench) for pointing out:
 ```rust
 #[derive(Serialize, Deserialize, Clone)]
 struct Message {
