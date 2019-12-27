@@ -68,8 +68,6 @@ impl Into<Vec<u8>> for Message {
 
 
 // types boilerplace to abstract of Sender and Receiver
-//trait SerDe: for<'de> Deserialize<'de> + Serialize {}
-//impl<T> SerDe for T where T: for<'de> Deserialize<'de> + Serialize {}
 trait ChanFn<IS,IR>: Fn()-> Result<(IS,IR),std::io::Error> {}
 impl<F,IS,IR> ChanFn<IS,IR> for F where F: Fn()-> Result<(IS,IR),std::io::Error> {}
 trait Sender<T>: for<'de> Deserialize<'de> + Serialize {
@@ -104,8 +102,8 @@ impl<T> Receiver<T> for IpcReceiver<T> where T: MessageData {
 }
 
 
-fn fork_receiver<TS, TR, IS, IR>(channel: impl ChanFn<IS,IR>) -> (Pid, IS)
-    where TS: MessageData, TR: MessageData, IS: Sender<TS>, IR: Receiver<TR> 
+fn fork_receiver<T, IS, IR>(channel: impl ChanFn<IS,IR>) -> (Pid, IS)
+    where T: MessageData, IS: Sender<T>, IR: Receiver<T> 
 {
     let (server, server_name) = IpcOneShotServer::new().unwrap();
     let pid = unsafe { fork(|| {
@@ -120,8 +118,8 @@ fn fork_receiver<TS, TR, IS, IR>(channel: impl ChanFn<IS,IR>) -> (Pid, IS)
     (pid, tx)
 }
 
-fn fork_sender<TS, TR, IS, IR>(msg: TS, channel: impl ChanFn<IS,IR>) -> (Pid, IR)
-    where TS: MessageData, TR: MessageData, IS: Sender<TS>, IR: Receiver<TR> 
+fn fork_sender<T, IS, IR>(msg: T, channel: impl ChanFn<IS,IR>) -> (Pid, IR)
+    where T: MessageData, IS: Sender<T>, IR: Receiver<T> 
 {
     let (server, server_name) = IpcOneShotServer::new().unwrap();
     let pid = unsafe { fork(|| {
@@ -136,10 +134,12 @@ fn fork_sender<TS, TR, IS, IR>(msg: TS, channel: impl ChanFn<IS,IR>) -> (Pid, IR
     (pid, rx)
 }
 
+#[inline]
 fn send<T: MessageData>(tx: &impl Sender<T>, msg: T) {
     tx.send_msg(msg).unwrap()
 }
 
+#[inline]
 fn receive<T: MessageData>(rx: &impl Receiver<T>) {
     let msg = rx.recv_msg().unwrap();
     if msg.get_topic() == 1 {
@@ -147,8 +147,8 @@ fn receive<T: MessageData>(rx: &impl Receiver<T>) {
     }
 }
 
-fn sends_custom_template<TS,TR,IS,IR>(c: &mut Criterion, channel: impl ChanFn<IS,IR>, group: &str)
-    where TS: MessageData, TR: MessageData,  IS: Sender<TS>, IR: Receiver<TR> 
+fn sends_custom_template<T,IS,IR>(c: &mut Criterion, channel: impl ChanFn<IS,IR>, group: &str)
+    where T: MessageData, IS: Sender<T>, IR: Receiver<T> 
 {
     static KB: usize = 1024;
     let mut group = c.benchmark_group(group);
@@ -156,7 +156,7 @@ fn sends_custom_template<TS,TR,IS,IR>(c: &mut Criterion, channel: impl ChanFn<IS
         group.throughput(Throughput::Bytes(*size as u64));
         // prepare data
         let data = (0..*size).into_iter().map(|i| (i%255) as u8).collect();
-        let mut msg = TS::from(MsgTuple(0u32, data));
+        let mut msg = T::from(MsgTuple(0u32, data));
         // start receiving process in parallel
         let (pid, tx) = fork_receiver(&channel);
         // benchmark
@@ -171,8 +171,8 @@ fn sends_custom_template<TS,TR,IS,IR>(c: &mut Criterion, channel: impl ChanFn<IS
     group.finish();
 }
 
-fn receives_custom_template<TS,TR,IS,IR>(c: &mut Criterion, channel: impl ChanFn<IS,IR>, group: &str) 
-    where TS: MessageData, TR: MessageData,  IS: Sender<TS>, IR: Receiver<TR> 
+fn receives_custom_template<T,IS,IR>(c: &mut Criterion, channel: impl ChanFn<IS,IR>, group: &str) 
+    where T: MessageData, IS: Sender<T>, IR: Receiver<T> 
 {
     static KB: usize = 1024;
     let mut group = c.benchmark_group(group);
@@ -180,7 +180,7 @@ fn receives_custom_template<TS,TR,IS,IR>(c: &mut Criterion, channel: impl ChanFn
         group.throughput(Throughput::Bytes(*size as u64));
         // prepare data
         let data = (0..*size).into_iter().map(|i| (i%255) as u8).collect();
-        let msg = TS::from(MsgTuple(0u32, data));
+        let msg = T::from(MsgTuple(0u32, data));
         // start receiving process in parallel
         let (pid, rx) = fork_sender(msg, &channel);
         // benchmark
