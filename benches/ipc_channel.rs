@@ -8,6 +8,7 @@ use serde::{Serialize, Deserialize};
 struct Message {
 	//pub topic: String,
 	pub topic: u32,
+        #[serde(with = "serde_bytes")]
 	pub data: Vec<u8>
 }
 

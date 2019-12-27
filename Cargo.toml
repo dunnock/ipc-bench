@@ -16,6 +16,7 @@ libc = "0.2"
 [dev-dependencies]
 criterion = "0.3"
 bincode = { version="1" }
+serde_bytes = "0.11"
 
 [[bench]]
 name = "ipc_bytes_channel"
