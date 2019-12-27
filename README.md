@@ -13,7 +13,7 @@ Benches compare sending of byte buffer of a given size either within a `Serializ
 
 It appears that sending and receiving bytes has about 5-10 times higher throughput than sending serializable object. Surprisingly sending 50KiB is more than 2 times slower than sending 10KiB and 100KiB - should be very platform specific. Sending/receiving bytes buf throughput has high variance. Sending/receiving serializable object has low variance.
 
-Tests performed on MacBook Pro '13 (which sucks at perf tests), tests named after <test>/<message size>. 
+Tests performed on MacBook Pro '13 (which sucks at perf tests), tests named by pattern `type/message size`. 
 
 ### Send Message structure
 
