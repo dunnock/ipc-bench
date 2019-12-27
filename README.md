@@ -20,6 +20,7 @@ struct Message {
 ```
 
 IpcSender<Message> / IpcReceiver<Message>
+
 ```log
 sends_custom/1024       time:   [1.7104 us 1.7234 us 1.7407 us]                               
                         thrpt:  [561.02 MiB/s 566.63 MiB/s 570.95 MiB/s]
@@ -33,6 +34,7 @@ sends_custom/51200      time:   [43.689 us 44.632 us 45.778 us]
 sends_custom/102400     time:   [69.929 us 70.925 us 72.257 us]                                
                         thrpt:  [1.3198 GiB/s 1.3446 GiB/s 1.3638 GiB/s]
 ```
+
 ```log
 receives_custom/1024    time:   [1.7672 us 1.8164 us 1.8696 us]                                  
                         thrpt:  [522.35 MiB/s 537.63 MiB/s 552.60 MiB/s]
@@ -45,6 +47,7 @@ receives_custom/51200   time:   [42.596 us 42.876 us 43.201 us]
 
 receives_custom/102400  time:   [70.224 us 70.906 us 71.863 us]                                   
                         thrpt:  [1.3271 GiB/s 1.3450 GiB/s 1.3580 GiB/s]
+```
 
 Test results with IpcBytesSender/IpcBytesReceiver
 
@@ -64,6 +67,7 @@ sends_custom_bytes/102400
                         time:   [60.408 us 61.474 us 62.816 us]
                         thrpt:  [1.5182 GiB/s 1.5514 GiB/s 1.5787 GiB/s]
 ```
+
 ```log
 receives_custom_bytes/1024                                                                             
                         time:   [1.4920 us 1.5064 us 1.5213 us]
