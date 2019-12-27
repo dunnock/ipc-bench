@@ -13,9 +13,9 @@ It appears I was missing to tell serde how to best work with bytes, following fi
 ```rust
 #[derive(Serialize, Deserialize, Clone)]
 struct Message {
-	pub topic: u32,
+    pub topic: u32,
     #[serde(with = "serde_bytes")]
-	pub data: Vec<u8>
+    pub data: Vec<u8>
 }
 ```
 
