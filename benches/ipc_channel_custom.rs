@@ -181,7 +181,7 @@ fn receives_custom_template<T,IS,IR>(c: &mut Criterion, channel: impl ChanFn<IS,
         // prepare data
         let data = (0..*size).into_iter().map(|i| (i%255) as u8).collect();
         let msg = T::from(MsgTuple(0u32, data));
-        // start receiving process in parallel
+        // start sending process in parallel
         let (pid, rx) = fork_sender(msg, &channel);
         // benchmark
         group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {

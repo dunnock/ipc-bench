@@ -92,7 +92,7 @@ pub fn bytes_receives(c: &mut Criterion) {
         group.throughput(Throughput::Bytes(*size as u64));
         // prepare data
         let msg: Vec<u8> = (0..*size).into_iter().map(|i| (i%255) as u8).collect();
-        // start receiving process in parallel
+        // start sending process in parallel
         let (pid, rx) = fork_sender(msg);
         // benchmark
         group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
